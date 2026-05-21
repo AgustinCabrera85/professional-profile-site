@@ -5,20 +5,33 @@ class CareerMapSection extends HTMLElement {
   connectedCallback() {
     this.selectedItemId = 'overview';
     this.openBranches = new Set(['complete']);
-    this.render();
+
     this.boundLanguageChange = () => {
       this.render();
       this.renderDetail(this.selectedItemId);
+      this.syncBranchHeights();
     };
+
+    this.boundResize = () => {
+      this.syncBranchHeights();
+    };
+
     window.addEventListener('languagechange', this.boundLanguageChange);
+    window.addEventListener('resize', this.boundResize);
+
+    this.render();
+    this.renderDetail(this.selectedItemId);
+    this.syncBranchHeights();
   }
 
   disconnectedCallback() {
     window.removeEventListener('languagechange', this.boundLanguageChange);
+    window.removeEventListener('resize', this.boundResize);
   }
 
   getSortedExperienceItems() {
     const { experience } = getContent();
+
     return [...experience.items]
       .filter((item) => item.showInCareerMap !== false)
       .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -69,7 +82,10 @@ class CareerMapSection extends HTMLElement {
     `;
 
     this.bindEvents();
-    this.renderDetail(this.selectedItemId);
+
+    requestAnimationFrame(() => {
+      this.syncBranchHeights();
+    });
   }
 
   renderBranch(branch, career) {
@@ -77,8 +93,17 @@ class CareerMapSection extends HTMLElement {
     const branchItems = this.getBranchItems(branch.id);
 
     return `
-      <article class="career-branch ${isOpen ? 'open' : ''}" data-branch="${branch.id}" data-tone="${branch.tone}">
-        <button class="career-branch-header" type="button" data-branch-toggle="${branch.id}" aria-expanded="${isOpen}">
+      <article
+        class="career-branch ${isOpen ? 'open' : ''}"
+        data-branch="${branch.id}"
+        data-tone="${branch.tone}"
+      >
+        <button
+          class="career-branch-header"
+          type="button"
+          data-branch-toggle="${branch.id}"
+          aria-expanded="${isOpen}"
+        >
           <span class="branch-meta">
             <span class="branch-dot"></span>
             <span>
@@ -86,12 +111,14 @@ class CareerMapSection extends HTMLElement {
               <small>${branch.subtitle}</small>
             </span>
           </span>
+
           <span class="branch-count">${branchItems.length} ${career.nodesLabel}</span>
           <span class="branch-arrow">⌄</span>
         </button>
 
         <div class="career-branch-body">
           <div class="branch-path" aria-hidden="true"></div>
+
           <div class="branch-node-grid">
             ${branchItems.map((item, index) => this.renderNode(item, index)).join('')}
           </div>
@@ -120,15 +147,21 @@ class CareerMapSection extends HTMLElement {
 
   bindEvents() {
     this.querySelectorAll('[data-branch-toggle]').forEach((button) => {
-      button.addEventListener('click', () => this.toggleBranch(button.dataset.branchToggle));
+      button.addEventListener('click', () => {
+        this.toggleBranch(button.dataset.branchToggle);
+      });
     });
 
     this.querySelectorAll('[data-branch-target]').forEach((button) => {
-      button.addEventListener('click', () => this.focusBranch(button.dataset.branchTarget));
+      button.addEventListener('click', () => {
+        this.focusBranch(button.dataset.branchTarget);
+      });
     });
 
     this.querySelectorAll('[data-career-node]').forEach((button) => {
-      button.addEventListener('click', () => this.renderDetail(button.dataset.careerNode));
+      button.addEventListener('click', () => {
+        this.renderDetail(button.dataset.careerNode);
+      });
     });
   }
 
@@ -147,13 +180,20 @@ class CareerMapSection extends HTMLElement {
     this.refreshBranchState();
 
     const branch = this.querySelector(`[data-branch="${branchId}"]`);
-    branch?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    requestAnimationFrame(() => {
+      branch?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
   }
 
   refreshBranchState() {
     this.querySelectorAll('.career-branch').forEach((branch) => {
       const branchId = branch.dataset.branch;
       const isOpen = this.openBranches.has(branchId);
+
       branch.classList.toggle('open', isOpen);
 
       const header = branch.querySelector('.career-branch-header');
@@ -161,14 +201,38 @@ class CareerMapSection extends HTMLElement {
     });
 
     this.querySelectorAll('.branch-shortcut').forEach((button) => {
-      button.classList.toggle('active', this.openBranches.has(button.dataset.branchTarget));
+      button.classList.toggle(
+        'active',
+        this.openBranches.has(button.dataset.branchTarget)
+      );
+    });
+
+    requestAnimationFrame(() => {
+      this.syncBranchHeights();
+    });
+  }
+
+  syncBranchHeights() {
+    this.querySelectorAll('.career-branch').forEach((branch) => {
+      const body = branch.querySelector('.career-branch-body');
+      if (!body) return;
+
+      const isOpen = branch.classList.contains('open');
+
+      if (isOpen) {
+        body.style.maxHeight = `${body.scrollHeight}px`;
+      } else {
+        body.style.maxHeight = '0px';
+      }
     });
   }
 
   getCareerItemById(id) {
     const { career, experience } = getContent();
 
-    if (id === career.overviewNode.id) return career.overviewNode;
+    if (id === career.overviewNode.id) {
+      return career.overviewNode;
+    }
 
     return experience.items.find((item) => item.id === id) || career.overviewNode;
   }
@@ -201,6 +265,10 @@ class CareerMapSection extends HTMLElement {
 
     this.querySelectorAll('[data-career-node]').forEach((node) => {
       node.classList.toggle('active', node.dataset.careerNode === item.id);
+    });
+
+    requestAnimationFrame(() => {
+      this.syncBranchHeights();
     });
   }
 }

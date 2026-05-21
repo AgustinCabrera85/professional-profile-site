@@ -695,10 +695,10 @@ h2.section-title {
     transform 340ms ease,
     padding 340ms ease;
   padding: 0 28px;
+  will-change: max-height;
 }
 
 .career-branch.open .career-branch-body {
-  max-height: 900px;
   opacity: 1;
   transform: translateY(0);
   padding: 0 28px 28px;
@@ -788,6 +788,38 @@ h2.section-title {
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 820;
+}
+
+.career-branch {
+  scroll-margin-top: 96px;
+}
+
+.branch-node-card {
+  min-height: 190px;
+}
+
+@media (max-width: 760px) {
+  .branch-node-card {
+    min-height: 170px;
+  }
+}
+
+@media (max-width: 520px) {
+  .career-branch-header {
+    align-items: start;
+  }
+
+  .career-branch-body {
+    padding: 0 20px;
+  }
+
+  .career-branch.open .career-branch-body {
+    padding: 0 20px 24px;
+  }
+
+  .branch-node-card {
+    min-height: auto;
+  }
 }
 
 /* Projects */
