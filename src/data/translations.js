@@ -7,7 +7,7 @@ export const TRANSLATIONS = {
       "email": "gerardo.a.cabrera@outlook.com",
       "phone": "+54 9 11 5009 6193",
       "location": "Buenos Aires, Argentina",
-      "linkedinUrl": "#",
+      "linkedinUrl": "https://www.linkedin.com/in/gerardo-agustin-cabrera-a0a38b58",
       "githubUrl": "https://github.com/AgustinCabrera85",
       "roleLine": "Senior QA Engineer · Agile Delivery Lead · Data Science Student",
       "heroTitle": "A versatile technology profile connecting quality, data, creativity and",
@@ -81,8 +81,8 @@ export const TRANSLATIONS = {
     },
     "career": {
       "kicker": "Interactive career map",
-      "title": "A scalable career map powered by one experience source.",
-      "copy": "Career branches and the exported PDF now read from the same experience dataset. Add a new role once, assign it to branches, and it can appear in both the visual map and the ATS-friendly CV.",
+      "title": "A career path shaped by quality, delivery, data and AI.",
+      "copy": "My professional path combines quality engineering, delivery leadership, automation and a growing focus on data and AI. This map highlights how those areas connect across different stages of my career.",
       "nodesLabel": "nodes",
       "overviewNode": {
         "id": "overview",
@@ -382,8 +382,8 @@ export const TRANSLATIONS = {
     },
     "projects": {
       "kicker": "Personal projects",
-      "title": "Selected GitHub repositories that show technical range.",
-      "copy": "A curated set of public projects from my GitHub profile. They help show hands-on experimentation across frontend, QA automation, 3D web development, TypeScript, AI/computer vision and tooling.",
+      "title": "Personal projects and technical exploration.",
+      "copy": "A selection of personal projects where I explore practical ideas across frontend development, QA tooling, 3D web experiences, computer vision and automation.",
       "githubKicker": "GitHub profile",
       "githubDescription": "These cards are intentionally written as portfolio summaries, not raw repository descriptions. The goal is to explain the professional value behind each project.",
       "items": [
@@ -617,7 +617,7 @@ export const TRANSLATIONS = {
       "email": "gerardo.a.cabrera@outlook.com",
       "phone": "+54 9 11 5009 6193",
       "location": "Buenos Aires, Argentina",
-      "linkedinUrl": "#",
+      "linkedinUrl": "https://www.linkedin.com/in/gerardo-agustin-cabrera-a0a38b58",
       "githubUrl": "https://github.com/AgustinCabrera85",
       "roleLine": "Senior QA Engineer · Agile Delivery Lead · Estudiante de Ciencia de Datos",
       "heroTitle": "Un perfil tecnológico versátil que conecta calidad, datos, creatividad e",
@@ -691,8 +691,8 @@ export const TRANSLATIONS = {
     },
     "career": {
       "kicker": "Mapa profesional interactivo",
-      "title": "Un mapa profesional escalable basado en una sola fuente de experiencia.",
-      "copy": "Las ramas del Career Map y el PDF exportado ahora leen desde el mismo dataset de experiencia. Agregás un nuevo rol una sola vez, le asignás ramas, y puede aparecer tanto en el mapa visual como en el CV ATS-friendly.",
+      "title": "Un recorrido profesional marcado por calidad, delivery, datos e IA.",
+      "copy": "Mi recorrido profesional combina quality engineering, liderazgo de delivery, automatización y un foco creciente en datos e IA. Este mapa muestra cómo esas áreas se conectan a lo largo de distintas etapas de mi carrera.",
       "nodesLabel": "nodos",
       "overviewNode": {
         "id": "overview",
@@ -992,8 +992,8 @@ export const TRANSLATIONS = {
     },
     "projects": {
       "kicker": "Proyectos personales",
-      "title": "Repositorios seleccionados de GitHub que muestran amplitud técnica.",
-      "copy": "Una selección curada de proyectos públicos de mi perfil de GitHub. Ayudan a mostrar experimentación práctica en frontend, automatización QA, desarrollo web 3D, TypeScript, IA/computer vision y tooling.",
+      "title": "Proyectos personales y exploración técnica.",
+      "copy": "Una selección de proyectos personales donde exploro ideas prácticas vinculadas a frontend, herramientas para QA, experiencias web 3D, computer vision y automatización.",
       "githubKicker": "Perfil de GitHub",
       "githubDescription": "Estas tarjetas están escritas como resúmenes de portfolio, no como descripciones crudas del repositorio. El objetivo es explicar el valor profesional detrás de cada proyecto.",
       "items": [
