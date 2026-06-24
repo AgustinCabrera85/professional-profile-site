@@ -1,3 +1,8 @@
+const TRUSTED_URLS = {
+  githubProfile: "https://github.com/AgustinCabrera85",
+  linkedInProfile: "https://www.linkedin.com/in/gerardo-agustin-cabrera-a0a38b58",
+};
+
 const PROJECT_URLS = {
   "bosque-babylon": "https://github.com/AgustinCabrera85/bosque-babylon",
   "app-status-board": "https://github.com/AgustinCabrera85/app-status-board",
@@ -14,6 +19,62 @@ const SECTION_IDS = {
   "additional-aptitudes": "additional-aptitudes",
   skills: "skills",
   education: "education",
+};
+
+const LANGUAGE_VALUES = {
+  en: "en",
+  es: "es",
+};
+
+const normalizeValue = (value) => String(value || "").trim().toLowerCase();
+
+const openTrustedUrl = (url, label) => {
+  const openedWindow = window.open(url, "_blank", "noopener,noreferrer");
+
+  if (!openedWindow) {
+    return {
+      success: false,
+      message: `The browser blocked the new tab for ${label}. Please allow popups for this site.`,
+      url,
+    };
+  }
+
+  return {
+    success: true,
+    message: `Opened ${label} in a new tab.`,
+    url,
+  };
+};
+
+const scrollToElementById = (targetId) => {
+  const targetElement = document.getElementById(targetId);
+
+  if (!targetElement) {
+    return {
+      success: false,
+      message: `Section "${targetId}" was not found on the page.`,
+    };
+  }
+
+  targetElement.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  window.history.replaceState(null, "", `#${targetId}`);
+
+  return {
+    success: true,
+    message: `Scrolled to section "${targetId}".`,
+  };
+};
+
+const flashElement = (element) => {
+  element.classList.add("cv-assistant-highlight");
+
+  window.setTimeout(() => {
+    element.classList.remove("cv-assistant-highlight");
+  }, 2200);
 };
 
 class ElevenLabsSecureWidget extends HTMLElement {
@@ -79,7 +140,11 @@ class ElevenLabsSecureWidget extends HTMLElement {
 
       if (existingScript) {
         existingScript.addEventListener("load", () => resolve(), { once: true });
-        existingScript.addEventListener("error", () => reject(new Error("Failed to load ElevenLabs script")), { once: true });
+        existingScript.addEventListener(
+          "error",
+          () => reject(new Error("Failed to load ElevenLabs script")),
+          { once: true }
+        );
         return;
       }
 
@@ -100,21 +165,17 @@ class ElevenLabsSecureWidget extends HTMLElement {
   }
 
   registerClientTools(widget) {
-    console.log("[ElevenLabs] Waiting for elevenlabs-convai:call event...");
-
     widget.addEventListener("elevenlabs-convai:call", (event) => {
-      console.log("[ElevenLabs] Call event received. Registering tools in event config.");
+      console.log("[ElevenLabs] Call event received. Registering client tools.");
 
       event.detail.config.clientTools = {
         openProject: ({ projectId }) => {
-          console.log("[ElevenLabs Tool] openProject called with:", { projectId });
+          console.log("[ElevenLabs Tool] openProject called:", { projectId });
 
-          const normalizedProjectId = String(projectId || "").trim().toLowerCase();
+          const normalizedProjectId = normalizeValue(projectId);
           const url = PROJECT_URLS[normalizedProjectId];
 
           if (!url) {
-            console.warn("[ElevenLabs Tool] Unknown projectId:", projectId);
-
             return {
               success: false,
               message: `Unknown projectId: ${projectId}`,
@@ -122,34 +183,16 @@ class ElevenLabsSecureWidget extends HTMLElement {
             };
           }
 
-          const openedWindow = window.open(url, "_blank", "noopener,noreferrer");
-
-          if (!openedWindow) {
-            console.warn("[ElevenLabs Tool] Browser blocked the popup/new tab.");
-
-            return {
-              success: false,
-              message: "The browser blocked the new tab. Please allow popups for this site or use the visible project link.",
-              url,
-            };
-          }
-
-          return {
-            success: true,
-            message: `Opened project ${normalizedProjectId} in a new tab.`,
-            url,
-          };
+          return openTrustedUrl(url, `project "${normalizedProjectId}"`);
         },
 
         scrollToSection: ({ sectionId }) => {
-          console.log("[ElevenLabs Tool] scrollToSection called with:", { sectionId });
+          console.log("[ElevenLabs Tool] scrollToSection called:", { sectionId });
 
-          const normalizedSectionId = String(sectionId || "").trim().toLowerCase();
+          const normalizedSectionId = normalizeValue(sectionId);
           const targetId = SECTION_IDS[normalizedSectionId];
 
           if (!targetId) {
-            console.warn("[ElevenLabs Tool] Unknown sectionId:", sectionId);
-
             return {
               success: false,
               message: `Unknown sectionId: ${sectionId}`,
@@ -157,27 +200,119 @@ class ElevenLabsSecureWidget extends HTMLElement {
             };
           }
 
-          const targetElement = document.getElementById(targetId);
+          return scrollToElementById(targetId);
+        },
 
-          if (!targetElement) {
-            console.warn("[ElevenLabs Tool] Section not found in DOM:", targetId);
+        openGitHub: () => {
+          console.log("[ElevenLabs Tool] openGitHub called");
+          return openTrustedUrl(TRUSTED_URLS.githubProfile, "GitHub profile");
+        },
 
+        openLinkedIn: () => {
+          console.log("[ElevenLabs Tool] openLinkedIn called");
+          return openTrustedUrl(TRUSTED_URLS.linkedInProfile, "LinkedIn profile");
+        },
+
+        downloadCV: () => {
+          console.log("[ElevenLabs Tool] downloadCV called");
+
+          const exportButton = document.querySelector("[data-resume-export]");
+
+          if (!exportButton) {
             return {
               success: false,
-              message: `Section "${targetId}" was not found on the page.`,
+              message: "The CV export button was not found on the page.",
             };
           }
 
-          targetElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-
-          window.history.replaceState(null, "", `#${targetId}`);
+          exportButton.click();
 
           return {
             success: true,
-            message: `Scrolled to section ${targetId}.`,
+            message: "Triggered CV export.",
+          };
+        },
+
+        switchLanguage: ({ language }) => {
+          console.log("[ElevenLabs Tool] switchLanguage called:", { language });
+
+          const normalizedLanguage = normalizeValue(language);
+          const targetLanguage = LANGUAGE_VALUES[normalizedLanguage];
+
+          if (!targetLanguage) {
+            return {
+              success: false,
+              message: `Unsupported language: ${language}`,
+              allowedLanguages: Object.keys(LANGUAGE_VALUES),
+            };
+          }
+
+          const currentLanguage = document.documentElement.lang;
+
+          if (currentLanguage === targetLanguage) {
+            return {
+              success: true,
+              message: `The website is already using language "${targetLanguage}".`,
+            };
+          }
+
+          localStorage.setItem("profile-site-language", targetLanguage);
+          document.documentElement.lang = targetLanguage;
+
+          window.dispatchEvent(
+            new CustomEvent("languagechange", {
+              detail: { language: targetLanguage },
+            })
+          );
+
+          return {
+            success: true,
+            message: `Switched website language to "${targetLanguage}".`,
+          };
+        },
+
+        showContactOptions: () => {
+          console.log("[ElevenLabs Tool] showContactOptions called");
+          return scrollToElementById("about");
+        },
+
+        highlightSkill: ({ skill }) => {
+          console.log("[ElevenLabs Tool] highlightSkill called:", { skill });
+
+          const normalizedSkill = normalizeValue(skill);
+
+          if (!normalizedSkill) {
+            return {
+              success: false,
+              message: "Missing skill value.",
+            };
+          }
+
+          const candidates = Array.from(
+            document.querySelectorAll(".tag, .tag-list span, .skill-pill, li, span")
+          );
+
+          const matchedElement = candidates.find((element) => {
+            return normalizeValue(element.textContent).includes(normalizedSkill);
+          });
+
+          if (!matchedElement) {
+            return {
+              success: false,
+              message: `Skill "${skill}" was not found on the visible page.`,
+            };
+          }
+
+          matchedElement.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+
+          flashElement(matchedElement);
+
+          return {
+            success: true,
+            message: `Highlighted skill "${skill}".`,
           };
         },
       };
@@ -187,31 +322,86 @@ class ElevenLabsSecureWidget extends HTMLElement {
   registerManualDebugTools() {
     window.cvAssistantTools = {
       openProject: (projectId) => {
-        const url = PROJECT_URLS[String(projectId || "").trim().toLowerCase()];
+        const normalizedProjectId = normalizeValue(projectId);
+        const url = PROJECT_URLS[normalizedProjectId];
 
         if (!url) {
           console.warn("[Manual Test] Unknown projectId:", projectId);
           return;
         }
 
-        window.open(url, "_blank", "noopener,noreferrer");
+        return openTrustedUrl(url, `project "${normalizedProjectId}"`);
       },
 
       scrollToSection: (sectionId) => {
-        const targetId = SECTION_IDS[String(sectionId || "").trim().toLowerCase()];
-        const targetElement = targetId ? document.getElementById(targetId) : null;
+        const normalizedSectionId = normalizeValue(sectionId);
+        const targetId = SECTION_IDS[normalizedSectionId];
 
-        if (!targetElement) {
-          console.warn("[Manual Test] Unknown or missing section:", sectionId);
+        if (!targetId) {
+          console.warn("[Manual Test] Unknown sectionId:", sectionId);
           return;
         }
 
-        targetElement.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
+        return scrollToElementById(targetId);
+      },
+
+      openGitHub: () => openTrustedUrl(TRUSTED_URLS.githubProfile, "GitHub profile"),
+
+      openLinkedIn: () => openTrustedUrl(TRUSTED_URLS.linkedInProfile, "LinkedIn profile"),
+
+      downloadCV: () => {
+        const exportButton = document.querySelector("[data-resume-export]");
+
+        if (!exportButton) {
+          console.warn("[Manual Test] CV export button not found");
+          return;
+        }
+
+        exportButton.click();
+      },
+
+      switchLanguage: (language) => {
+        const targetLanguage = LANGUAGE_VALUES[normalizeValue(language)];
+
+        if (!targetLanguage) {
+          console.warn("[Manual Test] Unsupported language:", language);
+          return;
+        }
+
+        localStorage.setItem("profile-site-language", targetLanguage);
+        document.documentElement.lang = targetLanguage;
+
+        window.dispatchEvent(
+          new CustomEvent("languagechange", {
+            detail: { language: targetLanguage },
+          })
+        );
+      },
+
+      showContactOptions: () => scrollToElementById("about"),
+
+      highlightSkill: (skill) => {
+        const normalizedSkill = normalizeValue(skill);
+
+        const candidates = Array.from(
+          document.querySelectorAll(".tag, .tag-list span, .skill-pill, li, span")
+        );
+
+        const matchedElement = candidates.find((element) => {
+          return normalizeValue(element.textContent).includes(normalizedSkill);
         });
 
-        window.history.replaceState(null, "", `#${targetId}`);
+        if (!matchedElement) {
+          console.warn("[Manual Test] Skill not found:", skill);
+          return;
+        }
+
+        matchedElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        flashElement(matchedElement);
       },
     };
 

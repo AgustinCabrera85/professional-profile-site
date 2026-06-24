@@ -1556,3 +1556,10 @@ h2.section-title {
     padding: 24px;
   }
 }
+.cv-assistant-highlight {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 8px rgba(56, 189, 248, 0.14);
+  border-radius: 12px;
+  transition: outline 180ms ease, box-shadow 180ms ease;
+}
