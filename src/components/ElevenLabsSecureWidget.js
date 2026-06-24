@@ -1,3 +1,5 @@
+import { setLanguage, getCurrentLanguage } from '../i18n.js';
+
 const TRUSTED_URLS = {
   githubProfile: "https://github.com/AgustinCabrera85",
   linkedInProfile: "https://www.linkedin.com/in/gerardo-agustin-cabrera-a0a38b58",
@@ -247,7 +249,7 @@ class ElevenLabsSecureWidget extends HTMLElement {
             };
           }
 
-          const currentLanguage = document.documentElement.lang;
+          const currentLanguage = getCurrentLanguage();
 
           if (currentLanguage === targetLanguage) {
             return {
@@ -256,14 +258,7 @@ class ElevenLabsSecureWidget extends HTMLElement {
             };
           }
 
-          localStorage.setItem("profile-site-language", targetLanguage);
-          document.documentElement.lang = targetLanguage;
-
-          window.dispatchEvent(
-            new CustomEvent("languagechange", {
-              detail: { language: targetLanguage },
-            })
-          );
+          setLanguage(targetLanguage);
 
           return {
             success: true,
@@ -368,14 +363,7 @@ class ElevenLabsSecureWidget extends HTMLElement {
           return;
         }
 
-        localStorage.setItem("profile-site-language", targetLanguage);
-        document.documentElement.lang = targetLanguage;
-
-        window.dispatchEvent(
-          new CustomEvent("languagechange", {
-            detail: { language: targetLanguage },
-          })
-        );
+        setLanguage(targetLanguage);
       },
 
       showContactOptions: () => scrollToElementById("about"),
