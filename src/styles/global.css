@@ -1515,3 +1515,44 @@ h2.section-title {
     padding: 20px;
   }
 }
+.ai-cv-assistant-section {
+  padding: 78px 0;
+}
+
+.ai-cv-assistant-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 28px;
+  align-items: stretch;
+  padding: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 28rem),
+    rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow);
+}
+
+.ai-cv-assistant-panel {
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.ai-cv-assistant-panel h3 {
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+}
+
+.ai-cv-assistant-panel p {
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .ai-cv-assistant-card {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+}

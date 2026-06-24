@@ -12,6 +12,7 @@ import './components/SkillsSection.js';
 import './components/EducationSection.js';
 import './components/SiteFooter.js';
 import './components/ResumeExport.js';
+import './components/AICVAssistantSection.js';
 
 initLanguage();
 

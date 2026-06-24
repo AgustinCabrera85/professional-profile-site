@@ -17,6 +17,21 @@ export const TRANSLATIONS = {
       "footerRole": "Senior QA Engineer / Agile Delivery Lead · Data Science Professional",
       "photoUrl": "/images/profile-professional.png"
     },
+    "aiCvAssistant": {
+      "kicker": "AI voice experience",
+      "title": "AI Voice CV Assistant powered by ElevenLabs.",
+      "copy": "This website includes a conversational voice assistant that allows visitors to ask about my experience, projects, skills and professional background using voice or text.",
+      "demoTitle": "What this demonstrates",
+      "demoCopy": "The integration shows practical experience with conversational AI, voice interfaces, prompt design, guardrails, knowledge grounding and web deployment.",
+      "tags": [
+        "ElevenLabs",
+        "Voice AI",
+        "Conversational UX",
+        "Prompt Engineering",
+        "Guardrails",
+        "Web Integration"
+      ]
+    },
     "nav": [
       {
         "label": "About",
@@ -626,6 +641,21 @@ export const TRANSLATIONS = {
       "profileSummary": "Soy un profesional tecnológico versátil que combina experiencia senior en calidad de software, liderazgo de delivery, pensamiento orientado a datos y una curiosidad sostenida por la IA desde hace años. Disfruto aprender rápido, conectar ideas entre distintas disciplinas y crear soluciones prácticas cuando los contextos cambian o los problemas no están completamente definidos.",
       "footerRole": "Senior QA Engineer / Agile Delivery Lead · Perfil orientado a Ciencia de Datos",
       "photoUrl": "/images/profile-professional.png"
+    },
+    "aiCvAssistant": {
+      "kicker": "Experiencia con IA de voz",
+      "title": "Asistente de CV por voz con ElevenLabs.",
+      "copy": "Este sitio incluye un asistente conversacional de voz que permite consultar mi experiencia, proyectos, habilidades y perfil profesional usando voz o texto.",
+      "demoTitle": "Qué demuestra esta integración",
+      "demoCopy": "La integración muestra experiencia práctica con IA conversacional, interfaces de voz, diseño de prompts, guardrails, conocimiento contextual y despliegue web.",
+      "tags": [
+        "ElevenLabs",
+        "Voice AI",
+        "UX Conversacional",
+        "Prompt Engineering",
+        "Guardrails",
+        "Integración Web"
+      ]
     },
     "nav": [
       {
